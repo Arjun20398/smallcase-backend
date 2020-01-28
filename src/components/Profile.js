@@ -6,14 +6,14 @@ import axios from "axios"
 
 const config = require("../config");
 
-
 export class Profile extends Component {
     constructor() {
         super();
         this.state = {
             returns: -1,
             table_data: [],
-            credits: 15
+            name:'',
+            credits: 0
         }
     }
 
@@ -49,6 +49,16 @@ export class Profile extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        axios.get('http://localhost:3033/api/credits')
+            .then(response => {
+
+                this.setState(prevState => ({
+                    credits: response.data.Credit
+                }))
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     handle_delete = (index) => {
@@ -59,7 +69,7 @@ export class Profile extends Component {
         }
 
         var data = this.state.table_data[index];
-
+        data.TradeType = 'Sell';
         axios.delete(`http://localhost:3033/api/trade/`, { data })
             .then(() => {
                 this.fetchData();
@@ -71,11 +81,6 @@ export class Profile extends Component {
 
         var array = [...this.state.table_data];
 
-        var trade = array[index]
-
-        console.log(trade)
-
-
         array.splice(index, 1);
         this.setState({ table_data: array });
 
@@ -84,7 +89,7 @@ export class Profile extends Component {
     handle_buy = (index, event) => {
 
 
-        if (index == -1) {
+        if (index === -1) {
             return;
         }
         event.preventDefault();
@@ -95,6 +100,7 @@ export class Profile extends Component {
             TickerSymbol: data.TickerSymbol,
             Price: data.buy_price,
             Shares: data.buy_count,
+            TradeType:'Buy',
         }
 
         axios.put(`http://localhost:3033/api/trade/`, body)
@@ -104,6 +110,7 @@ export class Profile extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        this.fetchData(); 
 
     }
 
@@ -121,6 +128,7 @@ export class Profile extends Component {
         let body = {
             TickerSymbol: data.TickerSymbol,
             Shares: - data.sell_value,
+            TradeType:'Sell'
         }
 
         axios.put(`http://localhost:3033/api/trade/`, body)
@@ -130,6 +138,7 @@ export class Profile extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        //this.fetchData();
 
     }
 
@@ -160,19 +169,13 @@ export class Profile extends Component {
 
 
     componentDidMount() {
-        var randomCredit = Math.floor((Math.random() * 10000) + 1);
-
         this.fetchData();
-
-        this.setState({
-            credits: randomCredit,
-        });
     }
 
     render() {
         return (
             <div>
-                <Header credits={this.state.credits}></Header>
+                <Header name={this.state.name}credits={this.state.credits}></Header>
                 <div className="m-5">
                     <Button className="float-left mb-3" href="/Add">Add</Button>
                     <DisplayTable

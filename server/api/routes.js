@@ -18,4 +18,7 @@ module.exports = function (app) {
     app.route('/api/returns/')
         .get(controller.getReturns);
 
+    app.route('/api/credits')
+        .get(controller.getCredits);
+
 };

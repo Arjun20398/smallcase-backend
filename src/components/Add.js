@@ -35,14 +35,15 @@ export class Add extends Component {
     handle_submit = (event) => {
         event.preventDefault();
         var form_data = {
-            TickerSymbol: this.state.TickerSymbol,
+            TickerSymbol: this.state.TickerSymbol.toUpperCase(),
             Price: this.state.SharePrice,
-            Shares: this.state.Share
+            Shares: this.state.Share,
+            TradeType: 'Buy'
         }
 
         axios.post('http://localhost:3033/api/trade', form_data)
         .then(response => {
-
+            this.props.history.push(`/`)
         })
         .catch(function (error) {
             console.log(error);
