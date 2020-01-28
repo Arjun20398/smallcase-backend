@@ -2,7 +2,13 @@ import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input, Row, } from 'reactstrap';
 import axios from 'axios';
 
+const max = 100000;
 export class Add extends Component {
+    _error = {
+        ticker:'',
+        share:'',
+        price:''
+    }
     constructor(){
         super();
         this.state = {
@@ -16,23 +22,34 @@ export class Add extends Component {
         this.setState({
             Share : event.target.value 
         })
-        
-        console.log(this.setState)
+        if(this.state.Share<1 || this.state.Share>max){
+            this._error.share = 'Share quantity should be more than 0 and less than 100000';
+        }
     }
 
     handle_tickerSymbol = (event) => {
         this.setState({
             TickerSymbol : event.target.value
         })
+        if(!/[a-zA-Z]/.test(this.state.TickerSymbol)){
+            this._error.share = 'Ticker Symbol must be alphabetic string';
+        }
     }
 
     handle_asp = (event) => {
         this.setState({
             SharePrice : event.target.value
         })
+        if(this.state.SharePrice<1 || this.state.SharePrice>max){
+            this._error.price = 'Share Price should be more than 0 and less than 100000';
+        }
     }
 
     handle_submit = (event) => {
+        if(this._error.share !== '' || this._error.price !== '' || this._error.ticker !== ''){
+            alert(this._error.share+'\n'+this._error.price+'\n'+this._error.ticker);
+            return 
+        }
         event.preventDefault();
         var form_data = {
             TickerSymbol: this.state.TickerSymbol.toUpperCase(),
