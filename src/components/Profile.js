@@ -5,15 +5,29 @@ import Header from "./Header"
 import axios from "axios"
 
 const config = require("../config");
+const min_price = 1;
+const max_price = 100000;
+const min_count = 1;
+const max_count = 100000;
+const min_sell_count = 1;
 
 export class Profile extends Component {
+    _errors = {
+        buy_price: "",
+        buy_count: "",
+        sell_value : ""
+    }
+
+    _isFormValid = 0;
+
     constructor() {
         super();
         this.state = {
             returns: -1,
             table_data: [],
             name:'',
-            credits: 0
+            credits: 0,
+            _form_error:''
         }
     }
 
@@ -91,6 +105,9 @@ export class Profile extends Component {
 
         if (index === -1) {
             return;
+        } else if(this._errors.buy_price !== '' || this._errors.buy_count !== ''){
+            alert(this._errors.buy_count +' '+ this._errors.buy_price );
+            return;
         }
         event.preventDefault();
 
@@ -118,6 +135,9 @@ export class Profile extends Component {
 
         if (index === -1) {
             return
+        } else if(this._errors.sell_value !== ''){
+            alert(this._errors.sell_value);
+            return 
         }
 
         event.preventDefault();
@@ -144,6 +164,12 @@ export class Profile extends Component {
 
     handle_change_buy_price = (index, event) => {
         var array = [...this.state.table_data];
+        if(event.target.value >= min_price && event.target.value <= max_price){
+            this._errors.buy_price = '';
+        } else {
+            this._errors.buy_price = 'Minimum share price should be ' + min_price +
+                                        '\n Maximum share price should be ' + max_price;
+        }
         if (index !== -1) {
             array[index].buy_price = event.target.value;
             this.setState({ table_data: array });
@@ -151,6 +177,12 @@ export class Profile extends Component {
     }
 
     handle_change_buy_count = (index, event) => {
+        if(event.target.value >= min_count && event.target.value <= max_count){
+            this._errors.buy_count = '';
+        } else {
+            this._errors.buy_count = 'Minimum share count should be ' + min_count +
+                                        '\n Maximum share count should be ' + max_count;
+        }
         var array = [...this.state.table_data];
         if (index !== -1) {
             array[index].buy_count = event.target.value;
@@ -159,12 +191,22 @@ export class Profile extends Component {
     }
 
     handle_change_sell = (index, event) => {
+        if(index === -1){
+            return 
+        }
         console.log("Handle Change " + index)
         var array = [...this.state.table_data];
-        if (index !== -1) {
-            array[index].sell_value = event.target.value;
-            this.setState({ table_data: array });
+        if(event.target.value >= min_sell_count && event.target.value < array[index].Shares){
+            this._errors.sell_value = '';
+        } else {
+            this._errors.sell_value = 'Minimum shares to sell should be ' + min_sell_count +
+                                        '\n Maximum shares to sell should be ' + (array[index].Shares - 1);
+            console.log(this._errors.sell_value);
         }
+        
+        array[index].sell_value = event.target.value;
+        this.setState({ table_data: array });
+        
     }
 
 
