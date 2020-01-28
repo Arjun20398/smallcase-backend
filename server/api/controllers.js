@@ -27,11 +27,20 @@ exports.addTrade = async (req, res) => {
 
 exports.getHistory = async (req, res) => {
     try {
-        let result = await History.find({})
-        res.json(result)
+        var pageNo = parseInt(req.query.pageNo)
+        var size = parseInt(req.query.size)
+        var query = {}
+        query.skip = size * (pageNo - 1)
+        query.limit = size
+        History.find({},{},{limit:query.limit,
+                            skip:query.skip,
+                            sort:{CreatedTime:'desc'}})
+                .exec((err, response)=>{
+                    res.json(response);
+                });
 
-    } catch (err) {
-        res.send(err)
+        }catch (err) {
+            res.send(err)
     }
 }
 
@@ -52,19 +61,17 @@ exports.updateTrade = async (req, res) => {
         let ts = req.body.TickerSymbol;
         let history = new History(req.body);
         let trade = await Trade.findOne({ TickerSymbol: ts });
-
         let totalShares = trade.Shares + parseInt(req.body.Shares),avgBuyPrice;
         // if buy => change avg pricep
         if(req.body.Shares < 0){
             avgBuyPrice = trade.Price;
             history.Shares *= -1;
             history.Price = sellingPrice;
-            let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: 100 * req.body.Shares}},{new:true});
         } else {
             avgBuyPrice = (trade.Price * trade.Shares + 
                 parseInt(req.body.Price) * parseInt(req.body.Shares)) / totalShares;
-            let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: - req.body.Price * req.body.Shares}},{new:true});
         }
+        let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: - history.Price * req.body.Shares}},{new:true});
         trade.Price = avgBuyPrice;
         trade.Shares += parseInt(req.body.Shares);
         //console.log(trade, req.body)
@@ -88,7 +95,7 @@ exports.deleteTrade = async (req, res) => {
             TickerSymbol: req.body.TickerSymbol
         });
         await history.save();
-        let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: 100 * body.Shares}},{new:true});
+        let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: sellingPrice * body.Shares}},{new:true});
         res.json({ message: 'Trade successfully deleted', r });
     } catch (err) {
         res.send(err);
@@ -120,6 +127,7 @@ exports.getHoldings = async (req, res) => {
 exports.getCredits = async (req, res) => {
     try {
         let profile = await Profile.findOne();
+        console.log(profile)
         res.json(profile);
     } catch (err) {
         res.send(err);
@@ -159,5 +167,14 @@ exports.getReturns = async (req, res) => {
     } catch (err) {
         res.send(err);
     }
+}
 
+exports.getHistoryCount = async (req, res) => {
+    try {
+        let HistoryCount = await History.count();
+        console.log(HistoryCount)
+        res.json(HistoryCount);
+    } catch (err) {
+        res.send(err);
+    }
 }

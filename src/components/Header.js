@@ -22,8 +22,8 @@ function Header(props) {
                     </NavItem>
                 
                 </Nav>
-                <NavbarText>Name : {props.name+"  "}</NavbarText>
-                <NavbarText>Credit : {props.credits}</NavbarText>
+                <NavbarText> Name : {props.name} </NavbarText>
+                <NavbarText> -Credits : {props.credits}</NavbarText>
             </Collapse>
         </Navbar>
     )

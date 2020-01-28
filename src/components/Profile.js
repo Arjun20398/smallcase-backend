@@ -65,9 +65,9 @@ export class Profile extends Component {
             });
         axios.get('http://localhost:3033/api/credits')
             .then(response => {
-
                 this.setState(prevState => ({
-                    credits: response.data.Credit
+                    credits: response.data.Credit,
+                    name : response.data.Name
                 }))
             })
             .catch(function (error) {
@@ -220,6 +220,7 @@ export class Profile extends Component {
                 <Header name={this.state.name}credits={this.state.credits}></Header>
                 <div className="m-5">
                     <Button className="float-left mb-3" href="/Add">Add</Button>
+                    <Button className="float-left mb-3 ml-3" href="/history">History</Button>
                     <DisplayTable
                         handle_buy={this.handle_buy}
                         handle_delete={this.handle_delete}

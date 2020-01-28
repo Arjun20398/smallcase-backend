@@ -21,4 +21,10 @@ module.exports = function (app) {
     app.route('/api/credits')
         .get(controller.getCredits);
 
+    app.route('/api/history')
+        .get(controller.getHistory);
+    
+    app.route('/api/getHistoryCount')
+        .get(controller.getHistoryCount);
+
 };
