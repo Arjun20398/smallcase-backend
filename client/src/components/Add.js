@@ -85,12 +85,12 @@ export class Add extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="SingleSharePrice">Single Share Price</Label>
-                        <Input type="number" required value={this.state.SharePrice} onChange={this.handle_asp} pattern="\d+" />
+                        <Input type="number" required value={this.state.SharePrice} onChange={this.handle_asp} />
                         <small className="text-danger"></small>
                     </FormGroup>
                     <FormGroup>
                         <Label for="Shares">Shares</Label>
-                        <Input type="number" required value={this.state.Share} onChange={this.handle_share} pattern="\d+"/>
+                        <Input type="number" required value={this.state.Share} onChange={this.handle_share} />
                         <small className="text-danger"></small>
                     </FormGroup>
                     <Button size="sm" block onClick={this.handle_submit}>Add</Button>

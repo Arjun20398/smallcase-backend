@@ -3,8 +3,7 @@ const Schema = mongoose.Schema;
 const autoIncrement = require('mongoose-auto-increment');
 
 
-var HistorySchema = new Schema({
-
+var History = new Schema({
     TickerSymbol: {
         type: String,
         required: true
@@ -23,11 +22,15 @@ var HistorySchema = new Schema({
     Price: {
         type: Number,
         required: true,
-    }
+    },
 
+    TradeType: {
+        type:String,
+        required:true,
+    }
 });
 
-var TradeSchema = new Schema({
+var Portfolio = new Schema({
 
     TickerSymbol: {
         type: String,
@@ -46,7 +49,22 @@ var TradeSchema = new Schema({
 
 });
 
+var Profile = new Schema({
 
-mongoose.model('Trade', TradeSchema);
-HistorySchema.plugin(autoIncrement.plugin, 'Counter');
-mongoose.model('History', HistorySchema);
+    Name: {
+        type: String,
+        required: true
+    },
+
+    Credit: {
+        type: Number,
+        required: true,
+    }
+
+});
+
+
+History.plugin(autoIncrement.plugin, 'Counter');
+mongoose.model('Trade', Portfolio);
+mongoose.model('History', History);
+mongoose.model('Profile', Profile);

@@ -29,12 +29,12 @@ function DisplayTable(props) {
                             <td>{anObjectMapped.Shares}</td>
                             <td className="row">
                                 <form className="row" onSubmit={(event) => handle_buy(index, event)}>
-                                    <Input pattern="\d+" type="number" required onChange={(event) => handle_change_buy_price(index, event)} className="w-25" name="buy_price" id="buy-price" value={anObjectMapped.buy_price}  placeholder="Price"/>
-                                    <Input pattern="\d+" type="number" required onChange={(event) => handle_change_buy_count(index, event)} className="w-25" name="buy_count" id="buy-count" value={anObjectMapped.buy_count} placeholder="Shares" />
+                                    <Input type="number" required onChange={(event) => handle_change_buy_price(index, event)} className="w-25" name="buy_price" id="buy-price" value={anObjectMapped.buy_price}  placeholder="Price"/>
+                                    <Input type="number" required onChange={(event) => handle_change_buy_count(index, event)} className="w-25" name="buy_count" id="buy-count" value={anObjectMapped.buy_count} placeholder="Shares" />
                                     <Button type="submit" outline color="success">Buy</Button>
                                 </form>
                                 <form className="row" onSubmit={(event) => handle_sell(index, event)}>
-                                    <Input pattern="\d+" type="number" required onChange={(event) => handle_change_sell(index, event)} className="w-25" name="sell" id="dell" value={anObjectMapped.sell_value} />
+                                    <Input type="number" required onChange={(event) => handle_change_sell(index, event)} className="w-25" name="sell" id="dell" value={anObjectMapped.sell_value} />
                                     <Button type="submit" outline color="warning">Sell</Button>
                                 </form>
                                 <Button outline color="danger" onClick={() => handle_delete(index)}>Sell All</Button>
