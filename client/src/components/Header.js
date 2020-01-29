@@ -20,8 +20,10 @@ function Header(props) {
                     <NavItem>
                         <NavLink href="/">Portfolio</NavLink>
                     </NavItem>
+                
                 </Nav>
-                <NavbarText>Credit : {props.credits}</NavbarText>
+                <NavbarText> Name : {props.name} </NavbarText>
+                <NavbarText> -Credits : {props.credits}</NavbarText>
             </Collapse>
         </Navbar>
     )
