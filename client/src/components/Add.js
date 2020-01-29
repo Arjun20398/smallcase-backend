@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, FormGroup, Label, Input, Row, } from 'reactstrap';
 import axios from 'axios';
+const config = require("../config");
 
 const max = 100000;
 export class Add extends Component {
@@ -22,7 +23,8 @@ export class Add extends Component {
         this.setState({
             Share : event.target.value 
         })
-        if(parseInt(this.state.Share)<1 || parseInt(this.state.Share)>max){
+        console.log(event.target.value)
+        if(event.target.value<1 || event.target.value>max){
             this._error.share = 'Share quantity should be more than 0 and less than 100000';
         }
     }
@@ -31,8 +33,9 @@ export class Add extends Component {
         this.setState({
             TickerSymbol : event.target.value
         })
-        if(!(/[a-zA-Z]*/.test(this.state.TickerSymbol))){
-            this._error.share = 'Ticker Symbol must be alphabetic string';
+        console.log(!(/[a -zA-Z]*/.test(event.target.value)));
+        if((/[a -zA-Z]*/.test(event.target.value) === true)){
+            this._error.ticker = '';
         }
     }
 
@@ -40,15 +43,16 @@ export class Add extends Component {
         this.setState({
             SharePrice : event.target.value
         })
-        if(parseInt(this.state.SharePrice)<1 || parseInt(this.state.SharePrice)>max){
+        if(event.target.value<1 ||event.target.value>max){
             this._error.price = 'Share Price should be more than 0 and less than 100000';
         }
     }
 
     handle_submit = (event) => {
+        console.log(this._error)
         if(this._error.share !== '' || this._error.price !== '' || this._error.ticker !== ''){
             alert(this._error.share+'\n'+this._error.price+'\n'+this._error.ticker);
-            return 
+            return ;
         }
         event.preventDefault();
         var form_data = {
@@ -58,8 +62,9 @@ export class Add extends Component {
             TradeType: 'Buy'
         }
 
-        axios.post('http://localhost:3033/api/trade', form_data)
+        axios.post(config.URL + '/api/trade', form_data)
         .then(response => {
+            console.log(response)
             this.props.history.push(`/`)
         })
         .catch(function (error) {
@@ -80,12 +85,12 @@ export class Add extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="SingleSharePrice">Single Share Price</Label>
-                        <Input required value={this.state.SharePrice} onChange={this.handle_asp} />
+                        <Input type="number" required value={this.state.SharePrice} onChange={this.handle_asp} />
                         <small className="text-danger"></small>
                     </FormGroup>
                     <FormGroup>
                         <Label for="Shares">Shares</Label>
-                        <Input required value={this.state.Share} onChange={this.handle_share} />
+                        <Input type="number" required value={this.state.Share} onChange={this.handle_share} />
                         <small className="text-danger"></small>
                     </FormGroup>
                     <Button size="sm" block onClick={this.handle_submit}>Add</Button>

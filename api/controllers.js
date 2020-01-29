@@ -29,42 +29,56 @@ exports.getHistory = async (req, res) => {
 
 exports.updateTrade = async (req, res) => {
     try {
-        let result = await History.findOneAndUpdate(
-            { _id: req.params.tradeId },
-            req.body,
-            { new: true }
-        );
+        Trade.find({TickerSymbol: req.body.TickerSymbol},async (error, arr)=>{
+            if(!error){
+                if(arr.length == 0){
+                    let newHistory = new History(req.body);
+                    let trade = new Trade(req.body)
+                    let result = await trade.save();
+                    try {
+                        let result = await newHistory.save();
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }else{
+                    let result = await History.findOneAndUpdate(
+                        { _id: req.params.tradeId },
+                        req.body,
+                        { new: true }
+                    );
+                    try {
+                        let ts = req.body.TickerSymbol;
+                        let history = new History(req.body);
+                        let trade = await Trade.findOne({ TickerSymbol: ts });
+                        let totalShares = trade.Shares + parseInt(req.body.Shares),avgBuyPrice;
+                        // if buy => change avg pricep
+                        if(req.body.Shares < 0){
+                            avgBuyPrice = trade.Price;
+                            history.Shares *= -1;
+                            history.Price = sellingPrice;
+                        } else {
+                            avgBuyPrice = (trade.Price * trade.Shares + 
+                                parseInt(req.body.Price) * parseInt(req.body.Shares)) / totalShares;
+                        }
+                        let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: - history.Price * req.body.Shares}},{new:true});
+                        trade.Price = avgBuyPrice;
+                        trade.Shares += parseInt(req.body.Shares);
+                        //console.log(trade, req.body)
+                        await history.save();
+                        await trade.save();
+                        res.json(trade);
+                
+                    } catch (err) {
+                        res.send(err)
+                    }                
+                }
+            }else{
+                console.log(error);
+            }
+        });
     } catch (err) {
         console.error(err);
     }
-
-
-    try {
-        let ts = req.body.TickerSymbol;
-        let history = new History(req.body);
-        let trade = await Trade.findOne({ TickerSymbol: ts });
-        let totalShares = trade.Shares + parseInt(req.body.Shares),avgBuyPrice;
-        // if buy => change avg pricep
-        if(req.body.Shares < 0){
-            avgBuyPrice = trade.Price;
-            history.Shares *= -1;
-            history.Price = sellingPrice;
-        } else {
-            avgBuyPrice = (trade.Price * trade.Shares + 
-                parseInt(req.body.Price) * parseInt(req.body.Shares)) / totalShares;
-        }
-        let profile = await Profile.findOneAndUpdate({},{$inc: {Credit: - history.Price * req.body.Shares}},{new:true});
-        trade.Price = avgBuyPrice;
-        trade.Shares += parseInt(req.body.Shares);
-        //console.log(trade, req.body)
-        await history.save();
-        await trade.save();
-        res.json(trade);
-
-    } catch (err) {
-        res.send(err)
-    }
-
 }
 
 

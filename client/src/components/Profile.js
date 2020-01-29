@@ -34,7 +34,7 @@ export class Profile extends Component {
     fetchData = () => {
         console.log("Fetching data")
 
-        axios.get('http://localhost:3033/api/portfolio')
+        axios.get(config.URL + '/api/portfolio')
             .then(response => {
 
                 let arr = [...response.data];
@@ -53,7 +53,7 @@ export class Profile extends Component {
                 console.log(error);
             });
 
-        axios.get('http://localhost:3033/api/returns')
+        axios.get(config.URL + '/api/returns')
             .then(response => {
 
                 this.setState(prevState => ({
@@ -63,7 +63,7 @@ export class Profile extends Component {
             .catch(function (error) {
                 console.log(error);
             });
-        axios.get('http://localhost:3033/api/credits')
+        axios.get(config.URL + '/api/credits')
             .then(response => {
                 this.setState(prevState => ({
                     credits: response.data.Credit,
@@ -84,7 +84,7 @@ export class Profile extends Component {
 
         var data = this.state.table_data[index];
         data.TradeType = 'Sell';
-        axios.delete(`http://localhost:3033/api/trade/`, { data })
+        axios.delete(config.URL + `/api/trade/`, { data })
             .then(() => {
                 this.fetchData();
             })
@@ -101,8 +101,7 @@ export class Profile extends Component {
     }
 
     handle_buy = (index, event) => {
-
-
+        console.log(this._errors)
         if (index === -1) {
             return;
         } else if(this._errors.buy_price !== '' || this._errors.buy_count !== ''){
@@ -120,7 +119,7 @@ export class Profile extends Component {
             TradeType:'Buy',
         }
 
-        axios.put(`http://localhost:3033/api/trade/`, body)
+        axios.put(config.URL + `/api/trade/`, body)
             .then(() => {
                 this.fetchData();
             })
@@ -151,7 +150,7 @@ export class Profile extends Component {
             TradeType:'Sell'
         }
 
-        axios.put(`http://localhost:3033/api/trade/`, body)
+        axios.put(config.URL + `/api/trade/`, body)
             .then(() => {
                 this.fetchData();
             })
@@ -164,7 +163,7 @@ export class Profile extends Component {
 
     handle_change_buy_price = (index, event) => {
         var array = [...this.state.table_data];
-        if(event.target.value >= min_price && event.target.value <= max_price){
+        if(parseInt(event.target.value) >= min_price && parseInt(event.target.value) <= max_price){
             this._errors.buy_price = '';
         } else {
             this._errors.buy_price = 'Minimum share price should be ' + min_price +
@@ -177,7 +176,8 @@ export class Profile extends Component {
     }
 
     handle_change_buy_count = (index, event) => {
-        if(event.target.value >= min_count && event.target.value <= max_count && typeof(event.target.value) === 'number'){
+        console.log(typeof event.target.value)
+        if(parseInt(event.target.value) >= min_count && parseInt(event.target.value) <= max_count ){
             this._errors.buy_count = '';
         } else {
             this._errors.buy_count = 'Minimum share count should be ' + min_count +
@@ -196,7 +196,7 @@ export class Profile extends Component {
         }
         console.log("Handle Change " + index)
         var array = [...this.state.table_data];
-        if(event.target.value >= min_sell_count && event.target.value < array[index].Shares  && typeof(event.target.value) === 'number'){
+        if(event.target.value >= min_sell_count && event.target.value < array[index].Shares ){
             this._errors.sell_value = '';
         } else {
             this._errors.sell_value = 'Minimum shares to sell should be ' + min_sell_count +

@@ -4,6 +4,7 @@ import DisplayHistory from "./DisplayHistory"
 import Header from "./Header"
 import axios from "axios"
 import PageChoose from './PageChoose'
+const config = require("../config");
 
 
 export class History extends Component {
@@ -25,7 +26,7 @@ export class History extends Component {
     fetchData = () => {
         console.log("Fetching history")
         this.fetchPage(this.state.currentPage)
-        axios.get('http://localhost:3033/api/credits')
+        axios.get(config.URL + '/api/credits')
             .then(response => {
                 this.setState(prevState => ({
                     credits: response.data.Credit,
@@ -38,7 +39,7 @@ export class History extends Component {
     }
 
     getPageCount = () => {
-        axios.get('http://localhost:3033/api/getHistoryCount')
+        axios.get(config.URL + '/api/getHistoryCount')
             .then(response => {
                 var arr = [];
                 for(var i=0; i<Math.ceil(response.data/this.state.limit); i++){
@@ -56,7 +57,7 @@ export class History extends Component {
     }
 
     fetchPage = (index) =>{
-        axios.get('http://localhost:3033/api/history?pageNo='+index+'&size='+this.state.limit)
+        axios.get(config.URL + '/api/history?pageNo='+index+'&size='+this.state.limit)
             .then(response => {
                 let arr = [...response.data];
                 console.log(arr)
