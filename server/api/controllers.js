@@ -7,24 +7,6 @@ const Profile = mongoose.model('Profile');
 const sellingPrice = 100;
 
 
-exports.addTrade = async (req, res) => {
-    let newHistory = new History(req.body);
-    try {
-        let result = await newHistory.save();
-    } catch (err) {
-        console.error(err);
-    }
-    let profile = await Profile.findOneAndUpdate({},{$inc: {Credit:- req.body.Price * req.body.Shares}},{new:true});
-    try {
-        let trade = new Trade(req.body)
-        let result = await trade.save();
-        res.json(result)
-    } catch (err) {
-        res.json(err)
-    }
-}
-
-
 exports.getHistory = async (req, res) => {
     try {
         var pageNo = parseInt(req.query.pageNo)

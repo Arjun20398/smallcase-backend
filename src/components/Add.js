@@ -22,7 +22,7 @@ export class Add extends Component {
         this.setState({
             Share : event.target.value 
         })
-        if(this.state.Share<1 || this.state.Share>max){
+        if(parseInt(this.state.Share)<1 || parseInt(this.state.Share)>max){
             this._error.share = 'Share quantity should be more than 0 and less than 100000';
         }
     }
@@ -31,7 +31,7 @@ export class Add extends Component {
         this.setState({
             TickerSymbol : event.target.value
         })
-        if(!/[a-zA-Z]/.test(this.state.TickerSymbol)){
+        if(!(/[a-zA-Z]*/.test(this.state.TickerSymbol))){
             this._error.share = 'Ticker Symbol must be alphabetic string';
         }
     }
@@ -40,7 +40,7 @@ export class Add extends Component {
         this.setState({
             SharePrice : event.target.value
         })
-        if(this.state.SharePrice<1 || this.state.SharePrice>max){
+        if(parseInt(this.state.SharePrice)<1 || parseInt(this.state.SharePrice)>max){
             this._error.price = 'Share Price should be more than 0 and less than 100000';
         }
     }

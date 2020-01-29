@@ -5,8 +5,6 @@ import Header from "./Header"
 import axios from "axios"
 import PageChoose from './PageChoose'
 
-const config = require("../config");
-
 
 export class History extends Component {
 

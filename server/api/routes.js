@@ -5,7 +5,7 @@ module.exports = function (app) {
 
     app.route('/api/trade')
         .get(controller.getHistory)
-        .post(controller.addTrade)
+        .post(controller.updateTrade)
         .put(controller.updateTrade)
         .delete(controller.deleteTrade);
 

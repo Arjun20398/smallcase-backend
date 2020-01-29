@@ -177,7 +177,7 @@ export class Profile extends Component {
     }
 
     handle_change_buy_count = (index, event) => {
-        if(event.target.value >= min_count && event.target.value <= max_count){
+        if(event.target.value >= min_count && event.target.value <= max_count && typeof(event.target.value) === 'number'){
             this._errors.buy_count = '';
         } else {
             this._errors.buy_count = 'Minimum share count should be ' + min_count +
@@ -196,7 +196,7 @@ export class Profile extends Component {
         }
         console.log("Handle Change " + index)
         var array = [...this.state.table_data];
-        if(event.target.value >= min_sell_count && event.target.value < array[index].Shares){
+        if(event.target.value >= min_sell_count && event.target.value < array[index].Shares  && typeof(event.target.value) === 'number'){
             this._errors.sell_value = '';
         } else {
             this._errors.sell_value = 'Minimum shares to sell should be ' + min_sell_count +
