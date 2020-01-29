@@ -37,7 +37,7 @@ function DisplayTable(props) {
                                     <Input required onChange={(event) => handle_change_sell(index, event)} className="w-25" name="sell" id="dell" value={anObjectMapped.sell_value} />
                                     <Button type="submit" outline color="warning">Sell</Button>
                                 </form>
-                                <Button outline color="danger" onClick={() => handle_delete(index)}>Delete</Button>
+                                <Button outline color="danger" onClick={() => handle_delete(index)}>Sell All</Button>
                             </td>
                         </tr>
                     );
